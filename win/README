@@ -1,0 +1,22 @@
+Tema 2
+Mihai Cosmin 332CC
+
+Metoda MPI_init(int* argc, char***argv) deschide semafoarele si cele doua memorii partajate.
+Prima memorie partajata este folosita pentru a da informatii tuturor proceselor despre numarul de procese, pid-urile
+celorlalte procese, rank-ul curent.
+Cea de-a doua este pentru metodele MPI_Recv, MPI_Send.Aceasta din urma este un buffer format din mai multe subbuffere
+pentru fiecare proces. Fiecare proces are la ispozitie 2 pagini de memorie.
+
+In metoda MPI_Finalize() eliberez memoria si setez pointerul info pe 0x1;
+
+In metoda MPI_Initialized() verific daca structura info este nula.
+
+In metoda MPI_Finalized() verific daca structura info este 0x1 pentru ca dupa eliberarea ei este setata pe aceasta 
+adresa.
+
+
+In metodele MPI_Send si MPI_Recv folosesc un semafor pentru acces exclusiv la memorie. Astfel incat daca mai multe
+metode vor sa preia tokenul pentru trimitere, una singura sa-l poata lua.
+Apoi setez in primul camp din memoria partajata pasul la care se afla primirea mesajului. Cand acest camp devine 0
+inseamna ca memoria este disponibila pentru a fi rescrisa.
+FOlosesc campurile 1, 2, 3, 4 pentru informatii ca sursa, destinatie, tag, count.
